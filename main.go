@@ -21,8 +21,40 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/ABHINAVGUPTA02/SnapDB/cmd"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+
+	"github.com/ABHINAVGUPTA02/SnapDB/cmd"
+)
 
 func main() {
-	cmd.Execute()
+	if len(os.Args) > 1 {
+		// Normal single-command execution
+		cmd.Execute()
+	} else {
+		// No args → start interactive mode
+		replMode()
+	}
+}
+
+func replMode() {
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		fmt.Print(">>> ")
+		line, _ := reader.ReadString('\n')
+		line = strings.TrimSpace(line)
+		if line == "exit" || line == "quit" {
+			break
+		}
+		args := strings.Split(line, " ")
+		if args[0] != "snapdb" {
+			fmt.Println("Error: commands must start with 'snapdb'")
+			continue
+		}
+		cmd.SetArguments(args[1:])
+		cmd.Execute()
+	}
 }
