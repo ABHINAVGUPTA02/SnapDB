@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ABHINAVGUPTA02/SnapDB/internal/db"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +29,7 @@ var connectCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Printf("Successfully connected to database %s at %s:%s\n", dbType, host, port)
+		connectToDB(dbType, user, password, host, port, dbname)
 
 		saveConnection()
 	},
@@ -51,6 +52,22 @@ func init() {
 	connectCmd.MarkFlagRequired("dbname")
 }
 
+func connectToDB(dbType string, user string, password string, host string, port string, dbname string) {
+	switch dbType {
+	case "mysql":
+		connector := &db.MySQLConnector{}
+		conn, err := connector.Connect(user, password, host, port, dbname)
+		if err != nil {
+			panic(err)
+		}
+		defer conn.Close()
+		fmt.Printf("Successfully connected to %s database %s at %s:%s\n", dbType, dbname, host, port)
+
+	default:
+		fmt.Printf("Unknown database type: %s\n", dbType)
+	}
+}
+
 func saveConnection() {
-	fmt.Printf("Connection Info Saved for later")
+	fmt.Printf("Connection Info Saved for later\n")
 }
