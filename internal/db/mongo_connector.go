@@ -11,9 +11,9 @@ import (
 
 type MongoConnector struct{}
 
-func (m *MongoConnector) Connect(host string, port string, user string, password string, dbname string) (*mongo.Client, error) {
-	uri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s", user, password, host, port, dbname)
-
+func (m *MongoConnector) Connect(user string, password string, host string, port string, dbname string) (*mongo.Client, error) {
+	uri := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?authSource=admin", user, password, host, port, dbname)
+	fmt.Printf("Connecting to %s\n", uri)
 	clientOptions := options.Client().ApplyURI(uri)
 
 	// connecting with a timeout
