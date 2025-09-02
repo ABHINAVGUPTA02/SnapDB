@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -72,6 +73,16 @@ func connectToDB(dbType string, user string, password string, host string, port 
 			break
 		}
 		defer conn.Close()
+		fmt.Printf("Successfully connected to %s database %s at %s:%s\n", dbType, dbname, host, port)
+
+	case "mongo":
+		connector := &db.MongoConnector{}
+		conn, err := connector.Connect(user, password, host, port, dbname)
+		if err != nil {
+			fmt.Println("Failed to connect to the database", err)
+			break
+		}
+		defer conn.Disconnect(context.Background())
 		fmt.Printf("Successfully connected to %s database %s at %s:%s\n", dbType, dbname, host, port)
 
 	default:
