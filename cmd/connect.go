@@ -63,6 +63,15 @@ func connectToDB(dbType string, user string, password string, host string, port 
 		defer conn.Close()
 		fmt.Printf("Successfully connected to %s database %s at %s:%s\n", dbType, dbname, host, port)
 
+	case "postgres":
+		connector := &db.PostgresqlConnector{}
+		conn, err := connector.Connect(user, password, host, port, dbname)
+		if err != nil {
+			panic(err)
+		}
+		defer conn.Close()
+		fmt.Printf("Successfully connected to %s database %s at %s:%s\n", dbType, dbname, host, port)
+
 	default:
 		fmt.Printf("Unknown database type: %s\n", dbType)
 	}
