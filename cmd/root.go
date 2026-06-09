@@ -2,11 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
-
-var args []string
 
 var rootCmd = &cobra.Command{
 	Use:   "snapdb",
@@ -22,8 +21,10 @@ func SetArguments(cmdArgs []string) {
 }
 
 // Execute runs the root command
-func Execute() {
+func Execute() error {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
+		return err
 	}
+	return nil
 }
